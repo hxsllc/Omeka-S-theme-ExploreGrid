@@ -1,0 +1,84 @@
+<?php 
+$query = $this->params()->fromQuery();
+$heroimg = $this->assetUrl('img/holdinghands.jpg');
+$movements = $this->assetUrl('img/movements.jpg');
+$locations = $this->assetUrl('img/locations.jpg');
+$organizations = $this->assetUrl('img/homehero2.jpg');
+$subjects = $this->assetUrl('img/subjects.jpg');
+
+?>
+<div id="home">
+    <div id="search" class="home-hero" style="background-image: url('<?php echo $heroimg; ?>');">
+        <div id="home-hero-content" >
+            <div id="searchbar">
+                <?php echo $this->partial('common/search-form'); ?>
+                <!--
+                <?php echo $this->hyperlink($this->translate('Advanced search'), $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true), ['class' => 'advanced-search']); ?>
+                -->
+                <a role="button" id="browse-button" href="<?php echo $site->url(); ?>/explore">Explore</a>
+            </div>
+            <div id="strapline"><?php echo $this->themeSetting('searchTitle'); ?></div>
+        </div>
+    </div>
+    <ul id="home-promo">
+        <li class="promo-item">
+            <div class="promo-block" style="background-image: url('<?php echo $movements; ?>'); ">
+                <a href="<?php echo $site->url(); ?>/reference/movements"></a>
+                <div class="category-flag"><a href="<?php echo $site->url(); ?>/reference/movements">Movements</a></div>
+            </div>
+        </li>
+        <li class="promo-item">
+            <div class="promo-block" style="background-image: url('<?php echo $organizations; ?>');  ">
+                <a href="<?php echo $site->url(); ?>/reference/organizations"></a>
+                <div class="category-flag"><a href="<?php echo $site->url(); ?>/reference/organizations">Organizations</a></div>
+            </div>
+        </li>
+        <li class="promo-item">
+            <div class="promo-block" style="background-image: url('<?php echo $locations; ?>'); ">
+                <a href="<?php echo $site->url(); ?>/reference/locations"></a>
+                <div class="category-flag"><a href="<?php echo $site->url(); ?>/reference/locations">Locations</a></div>
+            </div>
+        </li>
+        <li class="promo-item">
+            <div class="promo-block" style="background-image: url('<?php echo $subjects; ?>'); ">
+                <a href="<?php echo $site->url(); ?>/reference/subjects"></a>
+                <div class="category-flag"><a href="<?php echo $site->url(); ?>/reference/subjects">Subjects</a></div>
+            </div>
+        </li>
+    </ul>
+    </div>
+    <hr class="decorative-hr"  />
+    <div id="home-users">
+        
+        <h3>How can I use the Digital Library of Nonviolent Resistance?</h3>
+        <div class="row">
+            <div class="column">
+                <div class="row-column-item">
+                    <h4>Activist Training</h4>
+                    <p>Activists and trainers interested in conducting training workshops or organizing campaigns of nonviolent resistance will find a wealth of practical material from historical and contemporary movements.</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="row-column-item">
+                    <h4>Scholarly Research</h4>
+                    <p>Scholars will find a wealth of primary data for historical and sociological analyses of training in nonviolent resistance—a strategy advanced in the twentieth century and increasingly used across the globe in the twenty-first century to promote democratization and social justice.</p>
+                </div>
+            </div>
+            <div class="column">
+                <div class="row-column-item">
+                    <h4>Lifelong Learning</h4>
+                    <p>The general public can educate themselves about training in nonviolent methods to oppose corruption, injustice and authoritarianism.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+                    <?php if ($footerContent = $this->themeSetting('footer')): ?>
+                    <?php echo $footerContent; ?>
+                    <?php else: ?>
+                        <?php echo $this->translate('Powered by Omeka S'); ?>
+                    <?php endif; ?>
+    </footer>
+                
+</div>

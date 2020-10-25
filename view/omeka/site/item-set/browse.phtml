@@ -1,0 +1,41 @@
+<?php $escape = $this->plugin('escapeHtml');?>
+<?php $this->htmlElement('body')->appendAttribute('class', 'item-set resource browse'); 
+$filters = $this->searchFilters();
+
+?>
+
+<?php echo $this->pageTitle($this->translate('Collections'), 2); ?>
+
+<div id="total-results">
+    <?php echo $this->pagination(); ?>
+    collection(s)
+    
+    <?php if($filters){
+        echo " for " . $filters;
+    } ?>
+    
+    <?php //echo $this->pageTitle($this->translate('Items'), 0); ?>
+</div>
+
+<?php //echo $this->searchFilters(); ?>
+
+<?php //echo $this->pagination(); ?>
+<?php $this->trigger('view.browse.before'); ?>
+<div class="section">
+    <hr class="decorative-hr" />
+    <ul class="resource-list">
+        <?php foreach ($itemSets as $itemSet): ?>
+        <li class="item-set resource">
+            <?php echo $itemSet->linkRaw($this->thumbnail($itemSet, 'medium')); ?>
+            <h4><?php echo $itemSet->link($itemSet->displayTitle()); ?></h4>
+            <?php if ($description = $itemSet->displayDescription()): ?>
+            <div class="description"><?php echo $description; ?></div>
+            <?php endif; ?>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+<?php $this->trigger('view.browse.after'); ?>
+<div id="browse-footer-pagination">
+    <?php echo $this->pagination(); ?>
+</div>

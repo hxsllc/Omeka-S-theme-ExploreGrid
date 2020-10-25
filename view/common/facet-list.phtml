@@ -1,0 +1,52 @@
+    <h2><?php echo $this->translate('Facets'); ?></h2>
+    <?php if (empty($types)): ?>
+        <p><?php echo $this->translate('No facets available.'); ?></p>
+    <?php else: ?>
+        <?php
+    if (count($types) == 1): ?>
+        <ul class='references'>
+        <?php foreach ($references as $slug => $slugData): ?>
+            <li><?php
+                if($slugData['facet']==1) {
+                  echo $this->hyperlink(
+                    sprintf('%s (%d)', $slugData['label'], $this->reference()->count($slugData['term'], $slugData['type'], $resourceName, $query)),
+                    $this->url('site/reference/list', ['site-slug' => $siteSlug, 'slug' => $slug]),
+                    ['title' => sprintf($this->translate('Browse %s'), $slugData['label'])]
+                );
+                }
+            ?>
+            </li>
+        <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <ul class='references'>
+        <?php
+        // References are ordered: Item Types, then Elements.
+        $type = null;
+        $first = true;
+        foreach ($references as $slug => $slugData):
+        $changedType = $slugData['type'] != $type;
+            if ($changedType):
+                if ($first):
+                    $first = false;
+                else: ?>
+                    </ul></li>
+                <?php endif; ?>
+            <li><?php
+                echo $slugData['type'] === 'resource_classes' ? $this->translate('Main types') : $this->translate('Metadata');
+                $type = $slugData['type'];
+            ?><ul>
+            <?php endif; ?>
+            <li><?php
+                echo $this->hyperlink(
+                    sprintf('%s (%d)', $slugData['label'], $this->reference()->count($slugData['term'], $slugData['type'], $resourceName, $query)),
+                    $this->url('site/reference/list', ['site-slug' => $siteSlug, 'slug' => $slug]),
+                    ['title' => sprintf($this->translate('Browse %s'), $slugData['label'])]
+                );
+            ?>
+            </li>
+        <?php endforeach; ?>
+        </ul></li>
+    <?php endif; ?>
+    </ul>
+    <?php endif; ?>

@@ -1,0 +1,95 @@
+<?php
+$escape = $this->plugin('escapeHtml');
+$this->htmlElement('html')->setAttribute('lang', $this->lang());
+$this->headMeta()->setCharset('utf-8');
+$this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1');
+$this->headTitle($this->setting('installation_title', 'Omeka S'))->setSeparator(' · ');
+$this->headLink()->prependStylesheet($this->assetUrl('css/style.css'));
+$this->headLink()->prependStylesheet($this->assetUrl('css/iconfonts.css', 'Omeka'));
+$this->headLink()->prependStylesheet('//fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700italic,700');
+$this->headScript()->prependFile($this->assetUrl('js/desandroimagesloaded.js'));
+$this->headScript()->prependFile($this->assetUrl('js/desandromasonry.js'));
+$this->headScript()->prependFile($this->assetUrl('js/default.js'));
+$this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
+$this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
+
+
+$this->trigger('view.layout');
+$title = $this->pageTitle($site->title());
+$logo = $this->themeSettingAssetUrl('logo');
+if ($logo):
+    $title = '<img src="' . $this->escapeHtml($logo) . '">';
+endif;
+$userBar = $this->partial('common/user-bar', ['site' => $site]);
+$query = $this->params()->fromQuery();
+?>
+<?php echo $this->doctype(); ?>
+<?php echo $this->htmlElement('html'); ?>
+    <head><meta charset="gb18030">
+        <?php echo $this->headMeta(); ?>
+        <?php echo $this->headTitle(); ?>
+        <?php echo $this->headLink(); ?>
+        <?php echo $this->headStyle(); ?>
+        <?php echo $this->headScript(); ?>
+    </head>
+
+    <?php echo $this->htmlElement('body'); ?>
+        <?php //echo $userBar; ?>
+        <header <?php 
+        if (strlen($userBar) > 1){ echo "class='logged-in'"; } ?>>
+            <div id="top-bar">
+                <?php if ($this->themeSetting('logoLeft') && $this->themeSetting('logoRight')): ?>
+                    <a id="institution-logo" href="http://nonviolence.rutgers.edu/"><img src="<?php echo $this->themeSettingAssetUrl('logoLeft'); ?>" title="Logo" /></a>
+                    <a href="<?php echo $site->url(); ?>" class="site-title"><img src="<?php echo $this->themeSettingAssetUrl('logoRight'); ?>" title="Logo"></a>
+                <?php elseif ($this->themeSetting('logoLeft')): ?>
+                    <a id="institution-logo" href="http://nonviolence.rutgers.edu/"><img src="<?php echo $this->themeSettingAssetUrl('logoLeft'); ?>" title="Logo" /></a>
+                <?php elseif ($this->themeSetting('logoRight')): ?>
+                    <a href="<?php echo $site->url(); ?>" class="institution-logo"><?php echo $this->pageTitle($site->title()); ?></a>
+                    <a href="<?php echo $site->url(); ?>" class="site-title"><img src="<?php echo $this->themeSettingAssetUrl('logoRight'); ?>" title="Logo"></a>
+                <?php else: ?>
+                    <a href="<?php echo $site->url(); ?>" class="institution-logo"><?php echo $this->pageTitle($site->title()); ?></a>
+                <?php endif; ?>
+            </div>
+            <div id="nav-about">
+                    <a href="<?php echo $site->url() . '/' . $this->themeSetting('menuFeaturedPageLink') . '">' . $this->themeSetting('menuFeaturedPageTitle'); ?></a>
+            </div>
+            <div id="header-main">
+                <nav>
+                    <?php echo $site->publicNav()->menu()->renderMenu(null, [
+                'maxDepth' => $this->themeSetting('nav_depth') - 1]);?>
+                </nav>
+            </div>
+        </header>
+        <?php 
+            $whatPage = $_SERVER['REQUEST_URI'];
+            //echo $whatPage;
+            $displaySearch = 1;
+            if($whatPage=="/" || $whatPage=="/home" || $whatPage=="/index" || $whatPage=="/about" || $whatPage=="/item/search" || $whatPage=="/explore") $displaySearch=0;
+        ?>
+        <?php if($_SERVER['REQUEST_URI'] != $site->url()  && $displaySearch==1){ ?>
+            <div id="search" <?php 
+        if (strlen($userBar) > 1){ echo "class='logged-in'"; } ?>>
+                <div id="interior-hero-content">
+                    <?php echo $this->partial('common/search-form'); ?>
+                    <?php echo $this->hyperlink($this->translate('Advanced search'), $this->url('site/resource', ['controller' => 'item', 'action' => 'search'], ['query' => $query], true), ['class' => 'advanced-search']); ?>
+                </div>
+            </div>
+        <?php } ?>
+        <div id="content" role="main">
+            <?php if($_SERVER['REQUEST_URI'] != $site->url()){ ?>
+                    <?php echo $this->content; ?>
+            <?php } else { ?>         
+                <?php echo $this->content; ?>
+            <?php } ?>
+        </div>
+        <?php if($_SERVER['REQUEST_URI'] != $site->url()){ ?>
+            <footer>
+                <?php if ($footerContent = $this->themeSetting('footer')): ?>
+                <?php echo $footerContent; ?>
+                <?php else: ?>
+                    <?php echo $this->translate('Powered by Omeka S'); ?>
+                <?php endif; ?>
+            </footer>
+        <?php } ?> 
+    </body>
+</html>

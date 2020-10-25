@@ -1,0 +1,181 @@
+<?php
+$escape = $this->plugin('escapeHtml');
+$this->htmlElement('body')->appendAttribute('class', 'item resource show');
+$embedMedia = $this->siteSetting('item_media_embed', false);
+$itemMedia = $item->media();
+
+$this->headScript()->prependFile($this->assetUrl('js/lightslider.min.js'));
+$this->headScript()->prependFile($this->assetUrl('js/lightgallery.min.js'));
+$this->headLink()->prependStylesheet($this->assetUrl('css/lightgallery.min.css'));
+$this->headLink()->prependStylesheet($this->assetUrl('css/lightslider.min.css'));
+$lightMedia = [];
+$pdfMedia = [];
+$txtMedia = [];
+$otherMedia = [];
+foreach ($item->media() as $media) {
+
+    $mediaType = $media->mediaType(); 
+    $mediaRenderer = $media->renderer(); 
+    if ((strpos($mediaType, 'image') !== false) || (strpos($mediaRenderer, 'youtube') !== false)) {
+        $lightMedia[] = $media; 
+    } elseif ((strpos($mediaType, 'application') !== false)) {
+        $pdfMedia[] = $media; 
+    } elseif ((strpos($mediaType, 'text') !== false)) {
+        $txtMedia[] = $media;
+    } else {
+        $otherMedia[] = $media;
+    }
+}
+
+$creator = $item->value("dcterms:creator", array('all' => true));
+
+$date = $item->value("dcterms:date");
+$description = $item->value("dcterms:description");
+$rights = $item->value("dcterms:rights");
+$type = $item->value("dcterms:type");
+$extent = $item->value("dcterms:extent");
+
+?>
+
+<div id="item-intro">
+    <?php $this->trigger('view.show.before'); ?>
+    <div id="intro-image">
+        <?php if (count($lightMedia) > 1): ?>
+            <ul id="itemfiles" class="media-list">
+                <?php foreach ($lightMedia as $media): ?>
+                    <?php $source = ($media->originalUrl()) ? $media->originalUrl() : $media->source(); ?>
+                    <li data-src="<?php echo $source; ?>" data-thumb="<?php echo $escape($media->thumbnailUrl('medium')); ?>" class="media resource">
+                        
+                        <img src="<?php //echo $media->render(); 
+                        echo $media->thumbnailUrl('large');
+                        ?>" />
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php elseif (count($lightMedia) == 1): ?>
+            <img id="item-image" src="<?php echo $lightMedia[0]->thumbnailUrl('large'); ?>" />
+        <?php endif; ?>
+    </div>
+    <div id="intro-content">
+        <?php echo $this->pageTitle($item->displayTitle(), 2); 
+        if($date){ ?>
+            <p id="item-date"><a href="<?php echo $site->url(); ?>/item?resource_class_id=&property%5B0%5D%5Bjoiner%5D=and&property%5B0%5D%5Bproperty%5D=7&property%5B0%5D%5Btype%5D=eq&property%5B0%5D%5Btext%5D=<?php echo $date; ?>&site_id=&item_set_id%5B%5D=&submit=Search&sort_by=dcterms:title&sort_order=asc"><?php echo $date; ?></a></p>
+        <?php } 
+        if($creator && count($creator) > 1){ ?>
+           <p id="item-creator">by 
+           <?php foreach($creator as $c) {?>
+             <a href="<?php echo $site->url(); ?>/item?resource_class_id=&property%5B0%5D%5Bjoiner%5D=and&property%5B0%5D%5Bproperty%5D=2&property%5B0%5D%5Btype%5D=eq&property%5B0%5D%5Btext%5D=<?php echo $c; ?>&site_id=&item_set_id%5B%5D=&submit=Search&sort_by=dcterms:title&sort_order=asc"><?php echo $c; ?></a>; 
+            <?php } ?>
+            </p>
+        <?php } elseif($creator && count($creator) == 1) { ?>
+            <p id="item-creator">by <a href="<?php echo $site->url(); ?>/item?resource_class_id=&property%5B0%5D%5Bjoiner%5D=and&property%5B0%5D%5Bproperty%5D=2&property%5B0%5D%5Btype%5D=eq&property%5B0%5D%5Btext%5D=<?php echo $creator[0]; ?>&site_id=&item_set_id%5B%5D=&submit=Search&sort_by=dcterms:title&sort_order=asc"><?php echo $creator[0]; ?></a></p>
+        <?php }
+        if($extent){ ?>
+            <p id="item-extent"><?php echo $extent; ?> pages</p>
+        <?php } 
+        if($description){ ?>
+            <p id="item-description"><?php echo $description; ?></p>
+        <?php } 
+        if (count($pdfMedia) > 0): 
+            $pdfFilepath = $pdfMedia[0]->originalUrl();
+            
+            
+        ?>
+            <a href="<?php echo $pdfFilepath; ?>" role="button" id="download-pdf" download>Download pdf</a>
+        <?php endif; 
+        if (count($txtMedia) > 0): 
+            $txtFilename = $txtMedia[0]->originalUrl();
+        ?>
+            <a href="<?php echo $txtFilename; ?>" role="button" id="download-text" download>Download text</a>
+        <?php endif; ?>
+        <?php if($rights){ ?>
+            <p id="item-rights">Can I use it?</p>
+            <?php if(strpos($rights, 'CC-BY-NC-4.0') !== false) { ?>
+                <a href="https://creativecommons.org/licenses/by-nc/4.0/" id="rights-uri" target="_blank"><img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc.png" /></a>
+            <?php } else {?>
+                <p><?php echo $rights; ?></p>
+            <?php } 
+        } ?>
+        
+        
+    </div>
+</div>
+<div id="item-metadata">
+    <h4>About this <?php if($type){ echo $type;} else {echo "item";} ?></h4>
+    <?php echo $item->displayValues(); ?>
+    <div class="property">
+        <?php $itemSets = $item->itemSets(); ?>
+        <?php if (count($itemSets) > 0): ?>
+            <h4><?php echo $this->translate('Item sets'); ?></h4>
+            <?php foreach ($item->itemSets() as $itemSet): ?>
+                <div class="value"><a href="<?php echo $escape($itemSet->url()); ?>"><?php echo $itemSet->displayTitle(); ?></a></div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
+<!--<?php if (count($otherMedia) > 0): ?>
+<div id="other-media" class="property">
+    <h4><?php echo $this->translate('Other Media'); ?></h4>
+    <?php foreach($otherMedia as $media): ?>
+    <div class="value">
+        <a href="<?php echo $media->siteUrl(); ?>"><?php echo $media->displayTitle(); ?></a>
+    </div>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?> -->
+
+
+<?php
+$page = $this->params()->fromQuery('page', 1);
+$property = $this->params()->fromQuery('property');
+$subjectValues = $item->displaySubjectValues($page, 25, $property);
+?>
+<?php if ($subjectValues): ?>
+    <div id="item-linked">
+        <h3><?php echo $this->translate('Linked resources'); ?></h3>
+        <?php echo $subjectValues; ?>
+    </div>
+<?php endif; ?>
+<div class="clear"></div>
+<?php $this->trigger('view.show.after'); ?>
+
+<script src="<?php echo $this->assetUrl('js/lg-video.min.js'); ?>" type="text/javascript"></script>
+<script src="<?php echo $this->assetUrl('js/lg-zoom.js'); ?>" type="text/javascript"></script>
+
+<script>
+    jQuery(document).ready(function() {
+      $('#itemfiles').lightSlider({
+          mode: 'fade',
+          autoWidth:true,
+          adaptiveHeight:true,
+          gallery:true,
+          loop:true,
+          item:1,
+          thumbItem:5,
+          addClass:'left-light-slider',
+          slideMargin:0,
+          controls:true,
+          enableDrag: false,
+          currentPagerPosition:'middle',
+          onSliderLoad: function(el) {
+              el.lightGallery({
+                  selector: '#itemfiles .media',
+                  download: false,
+                  zoom: true,
+                  controls:true,
+                  youtubePlayerParams: {
+                      modestbranding: 1,
+                      showinfo: 0,
+                      rel: 0,
+                      controls: 1
+                  },
+                  vimeoPlayerParams: {
+                      byline : 0,
+                      portrait : 0,
+                      color : 'A90707'     
+                  },
+              });
+          }   
+      });  
+    });
+</script>

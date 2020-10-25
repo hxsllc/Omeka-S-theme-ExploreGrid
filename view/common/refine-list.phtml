@@ -1,0 +1,85 @@
+        <h3 class="reference-heading" id="number" style="font-family:Oswald;">COUNTRY</h3>    
+        <?php
+        
+        $query = NULL;
+        $options = [
+        'query_type' => 'eq',
+        'link_to_single' => true,
+        'custom_url' => false,
+        'total' => false,
+        'expanded' => false,
+        'strip' => true,
+        'raw' => false,
+        'headings' => false,
+        'skiplinks' => false,
+        ];
+
+
+        echo $this->references()->displayListForTerm('dcterms:spatial', $query, $options);
+        //echo $this->reference()->displayListForTerm("dcterms:spatial",
+        //    [
+        //        'type' => 'properties',
+        //        'resource_name' => 'items',
+        //        'order' => ['count' => 'DESC'],
+        //        'query' => ['site_id' => 1],
+        //        'per_page' => null,
+        //        'page' => null,
+        //    ],
+        //    [
+        //        'query_type' => 'eq',
+        //        'link_to_single' => true,
+        //        'total' => true,
+        //        'skiplinks' => false,
+        //        'headings' => false,
+        //        'raw' => false,
+        //    ]
+        //);
+        ?>
+    
+        <p></p>
+
+        <h3 class="reference-heading" id="number" style="font-family:Oswald;">TYPE</h3>
+        <?php
+        echo $this->references()->displayListForTerm('dcterms:type', $query, $options);
+        //echo $this->reference()->displayListForTerm("dcterms:type",
+        //    [
+        //        'type' => 'properties',
+        //        'resource_name' => 'items',
+        //        'order' => ['alphabetic' => 'ASC'],
+        //        'query' => ['site_id' => 1],
+        //        'per_page' => null,
+        //        'page' => null,
+        //    ],
+        //    [
+        //        'query_type' => 'eq',
+        //        'link_to_single' => true,
+        //        'total' => true,
+        //        'skiplinks' => false,
+        //        'headings' => false,
+        //        'raw' => false,
+        //    ]
+        //);
+        ?>
+    
+        <h3 class="reference-heading" id="number" style="font-family:Oswald;">YEAR</h3>
+        <?php
+        echo $this->references()->displayListForTerm('dcterms:date', $query, $options);
+        //echo $this->reference()->displayListForTerm("dcterms:date",
+        //    [
+        //        'type' => 'properties',
+        //        'resource_name' => 'items',
+        //        'order' => ['alphabetic' => 'ASC'],
+        //        'query' => ['site_id' => 1],
+        //        'per_page' => null,
+        //        'page' => null,
+        //    ],
+        //    [
+        //        'query_type' => 'eq',
+        //        'link_to_single' => true,
+        //        'total' => true,
+        //        'skiplinks' => false,
+        //        'headings' => false,
+        //        'raw' => false,
+        //    ]
+        //);
+        ?>
