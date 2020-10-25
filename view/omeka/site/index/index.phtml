@@ -8,7 +8,7 @@ $subjects = $this->assetUrl('img/subjects.jpg');
 
 ?>
 <div id="home">
-    <div id="search" class="home-hero" style="background-image: url('<?php echo $heroimg; ?>');">
+    <div id="search" class="home-hero" style="background-image: url('<?php echo $heroimg; ?>');min-height:<?php echo $this->themeSetting('cover_vh'); ?>vh">
         <div id="home-hero-content" >
             <div id="searchbar">
                 <?php echo $this->partial('common/search-form'); ?>

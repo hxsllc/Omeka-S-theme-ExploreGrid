@@ -13,13 +13,14 @@ $this->headScript()->prependFile($this->assetUrl('js/default.js'));
 $this->headScript()->prependFile($this->assetUrl('js/global.js', 'Omeka'));
 $this->headScript()->prependFile($this->assetUrl('vendor/jquery/jquery.min.js', 'Omeka'));
 
-
 $this->trigger('view.layout');
 $title = $this->pageTitle($site->title());
-$logo = $this->themeSettingAssetUrl('logo');
-if ($logo):
-    $title = '<img src="' . $this->escapeHtml($logo) . '">';
-endif;
+//$logo = $this->themeSettingAssetUrl('logo');
+$leftLogo = $this->assetUrl('img/left-logo-sample.png');
+$rightLogo = $this->assetUrl('img/right-logo-sample.png');
+//if ($logo):
+//    $title = '<img src="' . $this->escapeHtml($logo) . '">';
+//endif;
 $userBar = $this->partial('common/user-bar', ['site' => $site]);
 $query = $this->params()->fromQuery();
 ?>
@@ -47,7 +48,8 @@ $query = $this->params()->fromQuery();
                     <a href="<?php echo $site->url(); ?>" class="institution-logo"><?php echo $this->pageTitle($site->title()); ?></a>
                     <a href="<?php echo $site->url(); ?>" class="site-title"><img src="<?php echo $this->themeSettingAssetUrl('logoRight'); ?>" title="Logo"></a>
                 <?php else: ?>
-                    <a href="<?php echo $site->url(); ?>" class="institution-logo"><?php echo $this->pageTitle($site->title()); ?></a>
+                    <a href="<?php echo $site->url(); ?>" class="institution-logo"><img src="<?php echo $leftLogo; ?>" title="Site logo"/></a>
+                    <a href="<?php echo $site->url(); ?>" class="site-title"><img src="<?php echo $rightLogo; ?>" title="Institutional logo"></a>
                 <?php endif; ?>
             </div>
             <div id="nav-about">
